@@ -24,7 +24,7 @@ spec:
       repoURL: "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-gitops.git"
       revision: main
       files:
-      - path: model-deployments/prod/**/config.yaml
+      - path: canopy/prod/**/config.yaml
   template:
     metadata:
       name: "{{ .path.basename }}-prod"
@@ -34,14 +34,14 @@ spec:
         namespace: USER_NAME-prod
       project: canopy-prod-project
       sources:
-        - ref: app-values # custom values, override values git repo pointer
+        - ref: app-values 
           repoURL: "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-gitops.git"
           targetRevision: main
         - helm:
             valueFiles:
-              - $app-values/model-deployments/prod/{{ .path.basename }}/config.yaml  # override values file
+              - '{{ .values_file | default "$app-values/model-deployments/test/{{ .path.basename }}/config.yaml" }}'
           path: '{{ .chart_path }}'
-          repoURL: '{{ .repo_url | default "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-helmcharts.git" }}' # helm charts
+          repoURL: '{{ .repo_url | default "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-helmcharts.git" }}'
           targetRevision: '{{ .target_revision | default "main" }}'
       syncPolicy:
         automated:
