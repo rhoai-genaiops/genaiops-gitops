@@ -1,0 +1,51 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: canopy-prod-project
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: canopy-prod-appset
+spec:
+  goTemplate: true
+  generators:
+  - git:
+      repoURL: "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-gitops.git"
+      revision: main
+      files:
+      - path: model-deployments/prod/**/config.yaml
+  template:
+    metadata:
+      name: "{{ .path.basename }}-prod"
+    spec:
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: USER_NAME-prod
+      project: canopy-prod-project
+      sources:
+        - ref: app-values # custom values, override values git repo pointer
+          repoURL: "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-gitops.git"
+          targetRevision: main
+        - helm:
+            valueFiles:
+              - $app-values/model-deployments/prod/{{ .path.basename }}/config.yaml  # override values file
+          path: '{{ .chart_path }}'
+          repoURL: '{{ .repo_url | default "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-helmcharts.git" }}' # helm charts
+          targetRevision: '{{ .target_revision | default "main" }}'
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+          - Validate=true

@@ -1,0 +1,4 @@
+---
+repo_url: https://<GIT_SERVER>/<USER_NAME>/canopy-ui
+chart_path: chart
+values_file: values-prod.yaml
