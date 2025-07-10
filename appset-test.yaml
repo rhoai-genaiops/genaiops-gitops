@@ -39,7 +39,7 @@ spec:
           targetRevision: main
         - helm:
             valueFiles:
-              - '{{ .values_file | default "$app-values/model-deployments/test/{{ .path.basename }}/config.yaml" }}'
+              - '{{ .values_file | default "$app-values/canopy/test/{{ .path.basename }}/config.yaml" }}'
           path: '{{ .chart_path }}'
           repoURL: '{{ .repo_url | default "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-helmcharts.git" }}'
           targetRevision: '{{ .target_revision | default "main" }}'
