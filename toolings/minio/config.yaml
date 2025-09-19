@@ -2,4 +2,4 @@
 chart_path: charts/minio
 buckets:
   - name: pipeline
-  - name: results
+  - name: test-results
