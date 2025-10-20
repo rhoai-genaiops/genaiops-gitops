@@ -41,7 +41,7 @@ spec:
             valueFiles:
               - '{{ .values_file | default (printf "$app-values/canopy/test/%s/config.yaml" .path.basename) }}'
           path: '{{ .chart_path }}'
-          repoURL: '{{ .repo_url | default "https://gitea-gitea.CLUSTER_DOMAIN/USER_NAME/genaiops-helmcharts.git" }}'
+          repoURL: '{{ .repo_url | default "https://github.com/rhoai-genaiops/genaiops-helmcharts.git" }}'
           targetRevision: '{{ .target_revision | default "main" }}'
       syncPolicy:
         automated:
